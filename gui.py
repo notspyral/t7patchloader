@@ -11,18 +11,14 @@ CONFIG_FILE = "config.txt"
 class T7PatchLoaderApp:
 	def __init__(self, root):
 		self.root = root
-		self.root.title("T7 PATCH LOADER BY SPYRAL")
+		self.root.title("")
 		self.root.geometry("600x600")
 		self.root.configure(bg='#121212')  # Dark background for better readability
 		self.center_window()
 
-		self.root.overrideredirect(True)  # Make the window borderless
 		self.root.resizable(False, False)  # Disable window resizing
 
 		self.active_window = self.root  # Track the currently active window for dragging
-
-		# Create custom title bar
-		self.create_custom_title_bar()
 
 		# Initialize icon presets
 		self.icon_presets = {
@@ -48,62 +44,31 @@ class T7PatchLoaderApp:
 		y = (screen_height // 2) - (height // 2)
 		self.root.geometry(f'{width}x{height}+{x}+{y}')
 
-	def create_custom_title_bar(self, window=None):
-		"""Create a custom title bar for the given window."""
-		if window is None:
-			window = self.root
-
-		title_bar = tk.Frame(window, bg='#ff7400', relief='raised', bd=2, height=25)  # Reduced height
-		title_bar.pack(fill='x', side='top')
-
-		title_label = tk.Label(title_bar, text="T7 PATCH LOADER BY SPYRAL", bg='#ff7400', fg='#ffffff',
-							  font=("Refrigerator Deluxe", 16, "bold"))
-		title_label.pack(side='left', padx=10)
-
-		close_button = tk.Button(title_bar, text="X", command=window.destroy, bg='#ff7400', fg='#ffffff',
-								 font=("Refrigerator Deluxe", 14, "bold"), relief='flat', width=3)
-		close_button.pack(side='right')
-
-		title_bar.bind('<Button-1>', self.on_start_drag)
-		title_bar.bind('<B1-Motion>', self.on_drag)  # Pass only event object
-
-	def minimize_window(self):
-		self.root.withdraw()  # Minimize the window by withdrawing it
-
-	def on_start_drag(self, event):
-		"""Initialize drag operation."""
-		self.x = event.x
-		self.y = event.y
-		self.active_window = event.widget.master  # Set the active window to the master of the widget (title bar)
-
-	def on_drag(self, event):
-		"""Drag the active window."""
-		delta_x = event.x - self.x
-		delta_y = event.y - self.y
-		new_x = self.active_window.winfo_x() + delta_x
-		new_y = self.active_window.winfo_y() + delta_y
-		self.active_window.geometry(f"+{new_x}+{new_y}")
-
 	def create_widgets(self):
-		# Create a frame to hold all widgets
+		# Create and place the title label at the top of the window
+		self.title_label = tk.Label(self.root, text="T7 PATCH LOADER BY SPYRAL", bg='#121212', fg='#ffffff',
+								   font=("Refrigerator Deluxe", 24))
+		self.title_label.pack(pady=10)  # Adds padding around the title label
+
+		# Create a frame to hold all widgets, positioned below the title label
 		self.widget_frame = tk.Frame(self.root, bg='#121212', padx=20, pady=20)
-		self.widget_frame.place(relwidth=1, relheight=1, y=35)  # Move frame below title bar
+		self.widget_frame.place(relwidth=1, relheight=1, y=65)  # Adjust y to ensure frame is below the title label
 
 		# Action selection
 		self.action_label = tk.Label(self.widget_frame, text="SELECT AN ACTION:", bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 16, "bold"))
-		self.action_label.pack(pady=(20, 10))
+		self.action_label.pack(pady=(0, 0))
 
 		self.action_var = tk.StringVar(value='install')
 		self.action_frame = tk.Frame(self.widget_frame, bg='#121212')
 		self.action_frame.pack(pady=10)
 
 		self.install_radio = tk.Radiobutton(self.action_frame, text="INSTALL/MODIFY", variable=self.action_var, value='install',
-											bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 14), indicatoron=0, 
-											selectcolor='#ff8c33', relief="flat")
+										   bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 14), indicatoron=0, 
+										   selectcolor='#ff8c33', relief="flat")
 		self.install_radio.pack(side='left', padx=20)
 		self.uninstall_radio = tk.Radiobutton(self.action_frame, text="UNINSTALL", variable=self.action_var, value='uninstall',
-											  bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 14), indicatoron=0,
-											  selectcolor='#ff8c33', relief="flat")
+											 bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 14), indicatoron=0,
+											 selectcolor='#ff8c33', relief="flat")
 		self.uninstall_radio.pack(side='left', padx=20)
 
 		# File selection
@@ -123,7 +88,7 @@ class T7PatchLoaderApp:
 		self.action_button_frame.pack(pady=40)
 
 		self.install_button = tk.Button(self.action_button_frame, text="EXECUTE", command=self.execute_action,
-										bg='#ff7400', fg='#ffffff', font=("Refrigerator Deluxe", 16, "bold"), width=30)
+									   bg='#ff7400', fg='#ffffff', font=("Refrigerator Deluxe", 16, "bold"), width=30)
 		self.install_button.pack()
 
 		# Initialize variables
@@ -156,26 +121,24 @@ class T7PatchLoaderApp:
 			self.show_warning_message("No file selected!")
 
 	def select_shortcut_location(self):
-		self.shortcut_location = filedialog.askdirectory(title="Select Shortcut Location")
+		self.shortcut_location = filedialog.askdirectory(title="Select Shortcut Location (Defaults to Desktop)")
 		if not self.shortcut_location.strip():  # If no directory selected
 			self.shortcut_location = os.path.join(os.path.expanduser("~"), "DESKTOP")  # Default to Desktop
 
 	def change_shortcut_name(self):
-		new_name = simpledialog.askstring("Change Shortcut Name", "Enter new shortcut name (without extension):", parent=self.root)
+		new_name = simpledialog.askstring("Change Shortcut Name", "Enter new shortcut name (defaults to t7patchloader):", parent=self.root)
 		if new_name:
 			self.shortcut_name = new_name + ".lnk"
 			self.show_info_message(f"Shortcut name updated to: {self.shortcut_name}")
-		else:
-			self.show_warning_message("Shortcut name cannot be empty!")
 
 	def create_main_menu(self):
-	    """Create the main menu with a thin orange border."""
-	    self.main_menu_frame = tk.Frame(self.root, bg='#121212', borderwidth=2, relief='solid')
-	    self.main_menu_frame.pack(fill='both', expand=True, padx=10, pady=10)
+		"""Create the main menu with a thin orange border."""
+		self.main_menu_frame = tk.Frame(self.root, bg='#121212', borderwidth=2, relief='solid')
+		self.main_menu_frame.pack(fill='both', expand=True, padx=10, pady=10)
 
-	    # Main menu content here
-	    tk.Label(self.main_menu_frame, text="Main Menu", bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 24)).pack(pady=20)
-	    tk.Button(self.main_menu_frame, text="Open Icon Presets", command=self.show_icon_presets_window, bg='#ff7400', fg='#ffffff').pack(pady=10)
+		# Main menu content here
+		tk.Label(self.main_menu_frame, text="Main Menu", bg='#121212', fg='#ffffff', font=("Refrigerator Deluxe", 24)).pack(pady=20)
+		tk.Button(self.main_menu_frame, text="Open Icon Presets", command=self.show_icon_presets_window, bg='#ff7400', fg='#ffffff').pack(pady=10)
 
 	def show_icon_presets_window(self):
 		"""Show a window to select an icon preset."""
@@ -183,15 +146,11 @@ class T7PatchLoaderApp:
 			self.icon_presets_window = tk.Toplevel(self.root)
 			self.icon_presets_window.title("Select Icon Preset")
 			self.icon_presets_window.configure(bg='#121212')
-			self.icon_presets_window.overrideredirect(True)  # Make the window borderless
 			self.icon_presets_window.resizable(False, False)  # Make the window non-resizable
-
-			# Create the custom title bar
-			self.create_custom_title_bar(self.icon_presets_window)
 
 			# Calculate the position
 			window_width = 500
-			window_height = 400
+			window_height = 280
 			screen_width = self.root.winfo_screenwidth()
 			screen_height = self.root.winfo_screenheight()
 
@@ -260,12 +219,12 @@ class T7PatchLoaderApp:
 
 	def execute_action(self):
 		action = self.action_var.get()
-		if not self.exe_path or not self.shortcut_location:
-			self.show_warning_message("Please select the executable file and shortcut location!")
-			return
-
 		try:
 			if action == 'install':
+				if not self.exe_path or not self.shortcut_location:
+					self.show_warning_message("Please select the executable file and shortcut location!")
+					return
+
 				self.create_folder_in_same_directory()  # Ensure the folder is created
 				batch_file_path = os.path.join(self.folder_path, 'start_game.bat')
 				vbs_file_path = os.path.join(self.folder_path, 'start_game.vbs')
@@ -281,7 +240,6 @@ class T7PatchLoaderApp:
 
 			elif action == 'uninstall':
 				self.uninstall()
-				self.show_info_message("Uninstallation complete!")
 
 		except Exception as e:
 			self.show_error_message(f"An error occurred: {e}")
@@ -348,6 +306,7 @@ class T7PatchLoaderApp:
 					self.show_error_message(f"Failed to remove folder '{item}': {e}")
 
 		self.clear_config_file()
+		self.show_info_message("Uninstallation complete!")
 
 	def create_folder_in_same_directory(self, folder_name="T7PatchLoader"):
 		if getattr(sys, 'frozen', False):
