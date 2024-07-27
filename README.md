@@ -1,6 +1,6 @@
 # T7 Patch Loader
 
-# PLEASE READ: As of the 2.03, t7patch can now be loaded directly from bo3's directory, thus making this application obsolete. However, if you are still using the application version of t7patch for whatever reason, this application will still work with it.
+# PLEASE READ: As of version 2.03, t7patch can now be loaded directly from bo3's directory, thus making this application obsolete. However, if you are still using the application version of t7patch for whatever reason, this application will still work with it.
 
 Are you too lazy to press two buttons to open and close t7patch? Well don't you worry because T7 Patch Loader is here to do the job for you!
 
