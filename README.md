@@ -16,4 +16,4 @@ T7 Patch Loader is a python-based application which allows t7patch and Black Ops
 
 # How it Works
 
-The executable is a bundled python script which, when going through the instructions, creates a folder, the scripts inside the folder, and a shortcut leading to the script. The first script is **"t7patchbooter.bat".** This script simply opens t7patch then Black Ops 3 shortly after. Then it checks every 5 seconds if Black Ops 3 is still open, and closes it if that check is unsucessful. The next script is **batloader.vbs.** This one just opens the .bat file without having a command prompt open.
+The executable is a bundled python script which, when going through the instructions, creates a folder, the scripts inside the folder, and a shortcut leading to the script. The first script is **"t7patchbooter.bat".** This script simply opens t7patch then Black Ops 3 shortly after. Then it checks every 5 seconds if Black Ops 3 is still open, and then closes t7patch if it detects that Black Ops 3 is not open. The next script is **batloader.vbs.** This one just opens the .bat file without having a command prompt open.
