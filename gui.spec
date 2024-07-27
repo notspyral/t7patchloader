@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['test.py'],
+    ['C:\\Users\\Max\\Downloads\\t7patchloaderscript\\gui.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='test',
+    name='gui',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -35,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['C:\\Users\\Max\\Downloads\\icon.ico'],
 )
